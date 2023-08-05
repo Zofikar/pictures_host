@@ -16,8 +16,8 @@ export default function UploadImage() {
       if (!selectedFile) return;
       const formData = new FormData();
       formData.append("file", selectedFile);
-      const { data } = await axios.post("/api/image", formData);
-      console.log(data);
+      const { data } = await axios.post<fileUploadResponse>("/api/image", formData);
+      setFileUploadData(data)
     } catch (error: any) {
       console.log(error.response?.data);
     }
@@ -26,7 +26,7 @@ export default function UploadImage() {
 
   return (
       <div className="justify-center items-center w-full h-full flex">
-        <div className="p-20 space-y-6">
+        <div className="p-20 space-y-6 justify-center items-center w-full h-full flex flex-col">
             <label>
                 <input
                 type="file"
@@ -40,22 +40,41 @@ export default function UploadImage() {
                     }
                 }}
                 />
-                <div className="w-40 aspect-video rounded flex items-center justify-center border-2 border-dashed cursor-pointer">
+                <div className="w-[20dvw] rounded flex items-center justify-center border-2 border-dashed cursor-pointer aspect-auto">
                 {selectedImage ? (
                     <img src={selectedImage} alt="" />
                 ) : (
-                    <span>Select Image</span>
+                    <span className="text-center">Select Image</span>
                 )}
                 </div>
             </label>
-            <button
-                onClick={handleUpload}
-                disabled={uploading}
-                style={{ opacity: uploading ? ".5" : "1" }}
-                className="bg-red-600 p-3 w-32 text-center rounded text-white"
+
+            {typeof fileUploadData === "undefined" ? 
+                  <button
+                  onClick={handleUpload}
+                  disabled={uploading}
+                  style={{ opacity: uploading ? ".5" : "1" }}
+                  className="bg-red-600 p-3 w-32 text-center rounded text-white"
+              >
+                  {uploading ? "Uploading.." : "Upload"}
+              </button>
+              : 
+              fileUploadData.success ? <div>
+              <div>FIlename</div>
+              <div>{fileUploadData.filename}</div>
+              <div>Password:</div>
+              <div>{fileUploadData.psswd}</div>
+            </div>
+            :
+            <div><button
+            onClick={handleUpload}
+            disabled={uploading}
+            style={{ opacity: uploading ? ".5" : "1" }}
+            className="bg-red-600 p-3 w-32 text-center rounded text-white"
             >
                 {uploading ? "Uploading.." : "Upload"}
             </button>
+            <div>{fileUploadData.detail}</div></div>}
         </div>
     </div>
   )

@@ -5,11 +5,6 @@ import path from "path";
 const basepath = "/home/picturesHostData/"
 
 
-export const config = {
-    api: {
-      bodyParser: false,
-    }
-  };
 
 
 type protectedFile = {
